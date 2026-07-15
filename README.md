@@ -54,7 +54,7 @@ npm start
 **Bước 3:** Để script chạy — nó sẽ tự động:
 - Dismiss popup "rời màn hình" nếu xuất hiện
 - Click nút play khi video/audio đang dừng
-- Click nút **Tiếp theo** khi video/audio kết thúc để sang mục tiếp theo
+- Chờ khi video/audio kết thúc — khi bạn chuyển sang bài tiếp theo, script tự động phát luôn
 
 Nhấn `Ctrl+C` để dừng.
 
