@@ -1,0 +1,70 @@
+# Auto Learn Drive Car
+
+Tự động học lái xe trên trang [hoclaixethaiviet.huelms.com](https://hoclaixethaiviet.huelms.com) — script điều khiển Chrome thật của bạn, tự động click nút play khi video dừng và chuyển sang mục tiếp theo khi video kết thúc.
+
+## Yêu cầu
+
+- macOS (dùng AppleScript để điều khiển Chrome)
+- Google Chrome
+- Node.js >= 16
+
+## Cài đặt
+
+```bash
+git clone https://github.com/Hieutt1704/auto_learn_drive_car.git
+cd auto_learn_drive_car
+npm install
+```
+
+Tạo file `.env` từ mẫu:
+
+```bash
+cp .env.example .env
+```
+
+Điền thông tin đăng nhập vào `.env`:
+
+```
+USERNAME=số_cmnd_hoặc_tên_đăng_nhập
+PASSWORD=mật_khẩu
+```
+
+## Cách dùng
+
+**Bước 1:** Mở Chrome và đăng nhập vào trang học lái xe, điều hướng đến bài học muốn tự động học.
+
+**Bước 2:** Chạy script:
+
+```bash
+node auto_play.js
+```
+
+hoặc:
+
+```bash
+npm start
+```
+
+**Bước 3:** Để script chạy — nó sẽ tự động:
+- Click nút play khi video đang dừng
+- Click nút **Tiếp theo** khi video kết thúc để sang mục tiếp theo
+
+Nhấn `Ctrl+C` để dừng.
+
+## Lưu ý
+
+- Script chỉ chạy trên **macOS** (dùng AppleScript)
+- Script điều khiển **tab đang active** trên Chrome — đừng chuyển sang tab khác trong lúc script chạy
+- Không cần đóng/mở Chrome lại, script dùng Chrome đang mở của bạn
+
+## Cấu trúc project
+
+```
+├── auto_play.js       # Script chính
+├── debug_buttons.js   # Debug: in ra các button trên trang
+├── debug_iframe.js    # Debug: kiểm tra iframe và video tag
+├── check_once.js      # Thử click play 1 lần
+├── .env               # Thông tin đăng nhập (không commit)
+├── .env.example       # Mẫu file .env
+└── package.json
+```
