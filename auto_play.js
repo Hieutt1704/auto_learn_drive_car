@@ -2,6 +2,14 @@ const { exec } = require('child_process');
 
 const CHECK_INTERVAL = 3000;
 
+function isChromeActive() {
+  return new Promise((resolve) => {
+    exec(`osascript -e 'tell application "System Events" to get name of first process whose frontmost is true'`, (err, stdout) => {
+      resolve(!err && stdout.trim() === 'Google Chrome');
+    });
+  });
+}
+
 function runInChrome(js) {
   const escaped = js.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ');
   const script = `tell application "Google Chrome"\nset r to execute active tab of front window javascript "${escaped}"\nend tell`;
@@ -79,6 +87,13 @@ async function main() {
 
   while (true) {
     try {
+      const focused = await isChromeActive();
+      if (!focused) {
+        process.stdout.write('\r[~] Chrome không active — đang chờ... ');
+        await new Promise(r => setTimeout(r, CHECK_INTERVAL));
+        continue;
+      }
+
       const target = await tick();
 
       if (target.state === 'playing' || target.state === 'no-media' || target.state === 'ended' || target.state === 'no-btn') {
