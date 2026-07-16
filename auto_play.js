@@ -40,6 +40,12 @@ async function tick() {
     '  var tb = window.outerHeight - window.innerHeight;',
     '  function sc(cx,cy){return {screenX:Math.round(window.screenX+cx),screenY:Math.round(window.screenY+tb+cy)};}',
     '  function mid(r){return sc(r.left+r.width/2,r.top+r.height/2);}',
+    '  var locked = Array.from(document.querySelectorAll("h1,h2,h3,h4,p,div")).find(function(el){return el.offsetParent&&el.textContent.indexOf("KH\\u00d4NG TH\\u1ec2 XEM")!==-1;});',
+    '  if (locked) {',
+    '    var pb = Array.from(document.querySelectorAll("button")).find(function(b){return b.offsetParent&&b.textContent.indexOf("M\\u1ee5c tr\\u01b0\\u1edbc")!==-1;});',
+    '    if (pb) return JSON.stringify(Object.assign({state:"locked-back"},mid(pb.getBoundingClientRect())));',
+    '    return JSON.stringify({state:"locked"});',
+    '  }',
     '  var media = document.querySelector("video") || document.querySelector("audio");',
     '  if (!media) return JSON.stringify({state:"no-media"});',
     '  if (media.ended) {',
@@ -95,6 +101,7 @@ async function main() {
       }
 
       const target = await tick();
+
 
       if (target.state === 'playing' || target.state === 'no-media' || target.state === 'ended' || target.state === 'no-btn') {
         process.stdout.write(`\r[~] ${target.state.padEnd(20)}`);

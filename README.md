@@ -55,6 +55,7 @@ npm start
 - Dismiss popup "rời màn hình" nếu xuất hiện
 - Click nút play khi video/audio đang dừng
 - Chờ khi video/audio kết thúc — khi bạn chuyển sang bài tiếp theo, script tự động phát luôn
+- Phát hiện bài bị khóa ("Bạn không thể xem nội dung này") và tự click **Mục trước** để quay lại
 
 Nhấn `Ctrl+C` để dừng.
 
