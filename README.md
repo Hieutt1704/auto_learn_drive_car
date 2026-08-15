@@ -22,6 +22,20 @@ brew install cliclick
 
 **Cấp quyền Accessibility (bắt buộc, chỉ làm 1 lần):** System Settings → Privacy & Security → Accessibility → bật cho Terminal (hoặc ứng dụng đang chạy Claude Code). Nếu vừa bật mà vẫn gặp lỗi quyền, thử tắt/bật lại checkbox hoặc khởi động lại ứng dụng.
 
+**Bỏ qua xác nhận (confirm) khi chạy script (khuyến nghị):** vòng lặp `/quiz` gọi các script trong `scripts/quiz/` rất nhiều lần liên tiếp; nếu không cấu hình permission trước, Claude Code sandbox sẽ hỏi xác nhận (confirm) mỗi lần chạy, làm gián đoạn vòng lặp tự động. Để tránh việc này, thêm các rule cho phép chạy sẵn trong `.claude/settings.local.json` (file cá nhân, không commit lên git):
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(scripts/quiz/*.sh)"
+    ]
+  }
+}
+```
+
+Sau khi lưu, khởi động lại phiên Claude Code (hoặc mở `/hooks` một lần) để áp dụng.
+
 ## Cách dùng
 
 1. Mở Chrome, đăng nhập vào trang thi, vào đúng phần **Ôn luyện**.
