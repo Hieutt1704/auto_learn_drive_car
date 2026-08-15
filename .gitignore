@@ -4,3 +4,4 @@ chrome-profile/
 login.html
 Screenshot*
 .claude/settings.local.json
+__pycache__/

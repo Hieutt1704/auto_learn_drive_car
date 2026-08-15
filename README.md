@@ -1,82 +1,33 @@
 # Auto Learn Drive Car
 
-Tự động học lái xe trên trang [hoclaixethaiviet.huelms.com](https://hoclaixethaiviet.huelms.com) — script điều khiển Chrome thật của bạn qua AppleScript, dùng **System Events click thật** (isTrusted: true) nên website không phát hiện được automation.
+Tự động làm bài **Ôn luyện** trắc nghiệm bằng lái xe trên [hoclaixethaiviet.huelms.com](https://hoclaixethaiviet.huelms.com), chạy trong [Claude Code](https://claude.com/claude-code) qua skill `/quiz`.
+
+AI đọc từng câu hỏi, suy luận đáp án đúng dựa trên Luật Trật tự, an toàn giao thông đường bộ Việt Nam, rồi điều khiển Chrome thật (click chuột thật qua `cliclick`, không dùng JS click) để chọn đáp án và chuyển câu. Các câu đã từng gặp được lưu vào cache cục bộ nên lần sau gặp lại không cần AI suy luận lại; câu có hình ảnh (biển báo/sa hình) được chọn ngẫu nhiên vì AI không xem ảnh.
 
 ## Yêu cầu
 
 - macOS
+- [Claude Code](https://claude.com/claude-code)
 - Google Chrome
-- Node.js >= 16
+- [cliclick](https://github.com/BlueM/cliclick) — `brew install cliclick`
+- python3 (có sẵn qua Xcode Command Line Tools hoặc `brew install python3`)
 
 ## Cài đặt
 
 ```bash
 git clone https://github.com/Hieutt1704/auto_learn_drive_car.git
 cd auto_learn_drive_car
-npm install
+brew install cliclick
 ```
 
-Tạo file `.env` từ mẫu:
-
-```bash
-cp .env.example .env
-```
-
-Điền thông tin đăng nhập vào `.env`:
-
-```
-USERNAME=số_cmnd_hoặc_tên_đăng_nhập
-PASSWORD=mật_khẩu
-```
-
-## Cấp quyền Accessibility (bắt buộc, chỉ làm 1 lần)
-
-Script dùng System Events để giả lập click chuột thật — cần cấp quyền cho Terminal:
-
-**System Settings → Privacy & Security → Accessibility → bật Terminal**
+**Cấp quyền Accessibility (bắt buộc, chỉ làm 1 lần):** System Settings → Privacy & Security → Accessibility → bật cho Terminal (hoặc ứng dụng đang chạy Claude Code). Nếu vừa bật mà vẫn gặp lỗi quyền, thử tắt/bật lại checkbox hoặc khởi động lại ứng dụng.
 
 ## Cách dùng
 
-**Bước 1:** Mở Chrome, đăng nhập vào trang học lái xe và điều hướng đến bài học muốn tự động học.
+1. Mở Chrome, đăng nhập vào trang thi, vào đúng phần **Ôn luyện**.
+2. Trong Claude Code, gõ `/quiz`.
+3. AI sẽ tự lặp: đọc câu hỏi → chọn đáp án (từ cache, suy luận, hoặc random nếu có ảnh) → click → chuyển câu, cho đến khi hết bài hoặc bạn gõ "dừng".
 
-**Bước 2:** Chạy script:
+## Chi tiết kỹ thuật
 
-```bash
-node auto_play.js
-```
-
-hoặc:
-
-```bash
-npm start
-```
-
-**Bước 3:** Để script chạy — nó sẽ tự động:
-- Dismiss popup "rời màn hình" nếu xuất hiện
-- Click nút play khi video/audio đang dừng
-- Chờ khi video/audio kết thúc — bạn tự chuyển sang bài tiếp theo, script tự động phát luôn
-- Phát hiện bài bị khóa ("Bạn không thể xem nội dung này") và tự click **Mục trước** để quay lại
-- Tự tạm dừng khi Chrome không phải cửa sổ active, tiếp tục ngay khi bạn quay lại Chrome
-
-Nhấn `Ctrl+C` để dừng.
-
-## Lưu ý
-
-- Script chỉ chạy trên **macOS**
-- Script điều khiển **tab đang active** trên Chrome — đừng di chuyển chuột khi script đang click (Chrome đang ở foreground)
-- Bạn có thể chuyển sang cửa sổ khác — script sẽ tự pause và chờ Chrome active lại
-- Không cần đóng/mở Chrome, script dùng Chrome đang mở của bạn
-
-## Cấu trúc project
-
-```
-├── auto_play.js       # Script chính
-├── debug_buttons.js   # Debug: in ra các button trên trang
-├── debug_iframe.js    # Debug: kiểm tra iframe và video tag
-├── debug_audio.js     # Debug: kiểm tra audio player và buttons
-├── check_once.js      # Thử click play 1 lần
-├── debug_quiz.js      # Debug: kiểm tra quiz/câu hỏi trên trang
-├── .env               # Thông tin đăng nhập (không commit)
-├── .env.example       # Mẫu file .env
-└── package.json
-```
+Toàn bộ logic (đọc trang, quy đổi toạ độ, click bằng `cliclick`, cơ chế cache) nằm trong `scripts/quiz/` — xem [`scripts/quiz/README.md`](scripts/quiz/README.md) để biết sơ đồ luồng đầy đủ, danh sách script, và các lưu ý đã biết. Skill `/quiz` được định nghĩa ở `.claude/commands/quiz.md`.
