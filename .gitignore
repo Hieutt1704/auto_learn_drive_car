@@ -3,3 +3,4 @@ chrome-profile/
 .env
 login.html
 Screenshot*
+.claude/settings.local.json

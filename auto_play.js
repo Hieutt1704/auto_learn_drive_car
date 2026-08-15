@@ -1,6 +1,8 @@
 const { exec } = require('child_process');
 
-const CHECK_INTERVAL = 3000;
+function randomDelay(min = 2000, max = 4000) {
+  return min + Math.random() * (max - min);
+}
 
 function isChromeActive() {
   return new Promise((resolve) => {
@@ -96,7 +98,7 @@ async function main() {
       const focused = await isChromeActive();
       if (!focused) {
         process.stdout.write('\r[~] Chrome không active — đang chờ... ');
-        await new Promise(r => setTimeout(r, CHECK_INTERVAL));
+        await new Promise(r => setTimeout(r, randomDelay()));
         continue;
       }
 
@@ -105,18 +107,18 @@ async function main() {
 
       if (target.state === 'playing' || target.state === 'no-media' || target.state === 'ended' || target.state === 'no-btn') {
         process.stdout.write(`\r[~] ${target.state.padEnd(20)}`);
-        await new Promise(r => setTimeout(r, CHECK_INTERVAL));
+        await new Promise(r => setTimeout(r, randomDelay()));
         continue;
       }
 
       await realClick(target.screenX, target.screenY);
       total++;
       console.log(`[▶] #${total} — ${target.state} (${target.screenX}, ${target.screenY})`);
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, randomDelay()));
 
     } catch (e) {
       process.stdout.write(`\r[!] ${e.message.slice(0, 80)}`);
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, randomDelay(1000, 3000)));
     }
   }
 }

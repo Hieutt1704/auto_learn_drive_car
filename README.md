@@ -54,15 +54,17 @@ npm start
 **Bước 3:** Để script chạy — nó sẽ tự động:
 - Dismiss popup "rời màn hình" nếu xuất hiện
 - Click nút play khi video/audio đang dừng
-- Chờ khi video/audio kết thúc — khi bạn chuyển sang bài tiếp theo, script tự động phát luôn
+- Chờ khi video/audio kết thúc — bạn tự chuyển sang bài tiếp theo, script tự động phát luôn
 - Phát hiện bài bị khóa ("Bạn không thể xem nội dung này") và tự click **Mục trước** để quay lại
+- Tự tạm dừng khi Chrome không phải cửa sổ active, tiếp tục ngay khi bạn quay lại Chrome
 
 Nhấn `Ctrl+C` để dừng.
 
 ## Lưu ý
 
 - Script chỉ chạy trên **macOS**
-- Script điều khiển **tab đang active** trên Chrome — đừng di chuyển chuột hoặc che cửa sổ Chrome khi đang chạy
+- Script điều khiển **tab đang active** trên Chrome — đừng di chuyển chuột khi script đang click (Chrome đang ở foreground)
+- Bạn có thể chuyển sang cửa sổ khác — script sẽ tự pause và chờ Chrome active lại
 - Không cần đóng/mở Chrome, script dùng Chrome đang mở của bạn
 
 ## Cấu trúc project
@@ -73,6 +75,7 @@ Nhấn `Ctrl+C` để dừng.
 ├── debug_iframe.js    # Debug: kiểm tra iframe và video tag
 ├── debug_audio.js     # Debug: kiểm tra audio player và buttons
 ├── check_once.js      # Thử click play 1 lần
+├── debug_quiz.js      # Debug: kiểm tra quiz/câu hỏi trên trang
 ├── .env               # Thông tin đăng nhập (không commit)
 ├── .env.example       # Mẫu file .env
 └── package.json
