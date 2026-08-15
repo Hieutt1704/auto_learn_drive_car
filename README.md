@@ -22,17 +22,29 @@ brew install cliclick
 
 **Cấp quyền Accessibility (bắt buộc, chỉ làm 1 lần):** System Settings → Privacy & Security → Accessibility → bật cho Terminal (hoặc ứng dụng đang chạy Claude Code). Nếu vừa bật mà vẫn gặp lỗi quyền, thử tắt/bật lại checkbox hoặc khởi động lại ứng dụng.
 
-**Bỏ qua xác nhận (confirm) khi chạy script (khuyến nghị):** vòng lặp `/quiz` gọi các script trong `scripts/quiz/` rất nhiều lần liên tiếp; nếu không cấu hình permission trước, Claude Code sandbox sẽ hỏi xác nhận (confirm) mỗi lần chạy, làm gián đoạn vòng lặp tự động. Để tránh việc này, thêm các rule cho phép chạy sẵn trong `.claude/settings.local.json` (file cá nhân, không commit lên git):
+**Bỏ qua xác nhận (confirm) khi chạy script:** vòng lặp `/quiz` gọi các script trong `scripts/quiz/` rất nhiều lần liên tiếp; nếu không cấu hình permission trước, Claude Code sandbox sẽ hỏi xác nhận (confirm) mỗi lần chạy, làm gián đoạn vòng lặp tự động. Cấu hình trong `.claude/settings.local.json` (file cá nhân, không commit lên git), chọn 1 trong 2 cách:
 
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(scripts/quiz/*.sh)"
-    ]
+- **Chỉ whitelist script quiz (khuyến nghị, an toàn hơn):** thêm rule cho phép riêng các lệnh liên quan tới quiz, các hành động khác (git push, xoá file, v.v.) vẫn hỏi xác nhận như bình thường.
+
+  ```json
+  {
+    "permissions": {
+      "allow": [
+        "Bash(scripts/quiz/*.sh)"
+      ]
+    }
   }
-}
-```
+  ```
+
+- **Bỏ qua toàn bộ xác nhận trong session (`bypassPermissions`):** không hỏi xác nhận cho bất kỳ hành động nào, kể cả xoá file hay git push — chỉ dùng khi bạn kiểm soát tốt phiên làm việc.
+
+  ```json
+  {
+    "permissions": {
+      "defaultMode": "bypassPermissions"
+    }
+  }
+  ```
 
 Sau khi lưu, khởi động lại phiên Claude Code (hoặc mở `/hooks` một lần) để áp dụng.
 
