@@ -17,8 +17,23 @@ else:
 ")
 
 if [ -z "$RECT" ]; then
-  echo "FAIL không tìm thấy nút Tiếp (có thể đã hết bài hoặc cần Kết thúc luyện thi)"
-  exit 1
+  # Có thể chỉ là race condition (trang vừa chuyển câu, nút "Tiếp" chưa kịp render khi đọc) —
+  # đọc lại 1 lần sau khoảng nghỉ ngắn trước khi kết luận thật sự đã hết bài.
+  sleep 1.0
+  RECHECK_JSON=$("$DIR/read.sh")
+  RECT=$(echo "$RECHECK_JSON" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+nb=d['nextBtn']
+if not nb:
+    print('')
+else:
+    print(nb['left'], nb['top'], nb['width'], nb['height'])
+")
+  if [ -z "$RECT" ]; then
+    exec "$DIR/finish_restart.sh"
+  fi
+  BEFORE_JSON="$RECHECK_JSON"
 fi
 
 "$DIR/click.sh" $RECT > /dev/null
@@ -30,7 +45,12 @@ TOTAL=$(echo "$AFTER_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin)
 
 if [ "$CUR_AFTER" != "$CUR_BEFORE" ]; then
   echo "OK $CUR_AFTER/$TOTAL"
-else
-  echo "FAIL progress không đổi ($CUR_BEFORE/$TOTAL) — thử gọi lại next.sh"
-  exit 1
+  exit 0
 fi
+
+# Không tự ý ép click bằng force_click.sh ở đây nữa (từng gây tác dụng phụ khó lường —
+# có lúc vô tình kết thúc/điều hướng sai trang thay vì chỉ bấm đúng nút Tiếp). Nếu câu có
+# ảnh cao khiến nút Tiếp bị che/ngoài màn hình, gọi force_click.sh "Tiếp" TRỰC TIẾP và có
+# chủ đích khi cần, không phải tự động ở đây.
+echo "FAIL progress không đổi ($CUR_BEFORE/$TOTAL) — thử gọi lại next.sh"
+exit 1

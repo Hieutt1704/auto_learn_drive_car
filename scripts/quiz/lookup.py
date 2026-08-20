@@ -13,7 +13,7 @@ if not options:
     print("MISS")
     sys.exit(0)
 
-key = question_key(options)
+key = question_key(d.get("question"), options, d.get("imageSrc") or "")
 cache = load_cache()
 entry = cache.get(key)
 if not entry:

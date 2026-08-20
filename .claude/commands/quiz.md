@@ -18,8 +18,9 @@ which python3
 2. Đọc JSON: `question`, `options[].text`. Dựa vào kiến thức Luật Trật tự, an toàn giao thông đường bộ Việt Nam, xác định đáp án đúng nhất. Suy luận ngắn gọn (1-2 câu), nêu rõ `index` (0-based).
 3. Chạy `scripts/quiz/commit.sh <index>`. Output dạng `COMMITTED <index> (SAVED <idx>|SKIP ...) -> OK cur/total`.
 4. In 1 dòng: `[Câu cur/total] <tóm tắt câu hỏi>... → Đáp án <index>: "<tóm tắt>"`.
-5. Nếu `cur/total` cho thấy đã hết bài (`cur >= total`), hoặc `step.sh`/`commit.sh` báo không tìm thấy nút Tiếp → dừng, báo kết quả cho user.
-6. Quay lại bước 1.
+5. Nếu output ở bước 1 hoặc bước 3 chứa `RESTARTED` (dạng `... -> RESTARTED STATS[<đúng>/<tổng> dung, <sai> sai] OK 1/total`) — nghĩa là đã làm hết bài, script đã **tự động** bấm "Kết thúc luyện thi" rồi "Luyện tất cả (N)" để làm lại từ câu 1. In 1 dòng tóm tắt kết quả lượt vừa xong, ví dụ `✅ Hết lượt: đúng <đúng>/<tổng> (sai <sai>) → tự động Luyện tất cả, bắt đầu lượt mới từ câu 1.` rồi quay lại bước 1 bình thường (KHÔNG dừng — cứ tiếp tục lặp vô hạn qua nhiều lượt cho tới khi user gõ "dừng").
+6. Nếu `step.sh`/`commit.sh` báo lỗi thật (không phải `RESTARTED`) mà không tìm thấy nút Tiếp lẫn nút Kết thúc/Luyện tất cả → dừng, báo lỗi cho user.
+7. Quay lại bước 1.
 
 ## Lưu ý quan trọng
 
@@ -29,6 +30,7 @@ which python3
 - Nếu trang có overlay "Bạn đã vừa rời màn hình..." khiến `step.sh`/`commit.sh` fail liên tục dù toạ độ hợp lý → chạy `switch_tab.sh` rồi thử lại.
 - Nếu trang có video/audio đang phát, bỏ qua và đợi 3s trước khi đọc lại.
 - Dừng ngay khi user gõ "dừng" hoặc Ctrl+C.
+- **KHÔNG dùng AskUserQuestion để xin xác nhận giữa vòng lặp** (kể cả khi đạt điểm cao/gần hoàn thành, kể cả khi restart nhiều lần) — cứ tự lặp tiếp theo vòng lặp chính ở trên. Chỉ hỏi user khi thực sự bế tắc: lỗi thật không tự phục hồi được (không tìm thấy nút Tiếp lẫn Kết thúc/Luyện tất cả sau khi đã thử `read.sh`/`switch_tab.sh`), hoặc phát hiện thay đổi trạng thái ngoài ý muốn cần user xác nhận trước khi hành động tiếp (vd. cửa sổ Chrome bị đóng, layout màn hình đổi khác).
 
 ## Bắt đầu
 

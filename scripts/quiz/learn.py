@@ -26,11 +26,13 @@ if idx is None or idx < 0 or idx >= len(options):
     print("SKIP correctIndex-not-found")
     sys.exit(0)
 
-key = question_key(options)
+image_src = d.get("imageSrc") or ""
+key = question_key(d.get("question"), options, image_src)
 correct_text = options[idx]["text"]
 cache = load_cache()
 cache[key] = {
     "question": (d.get("question") or "")[:200],
+    "imageSrc": image_src,
     "correctNorm": norm(correct_text),
     "correctText": correct_text,
     "options": [norm(o["text"]) for o in options],

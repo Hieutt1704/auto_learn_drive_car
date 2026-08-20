@@ -32,4 +32,11 @@ if [[ "$HASIMAGE" == "True" ]]; then
 fi
 
 echo "NEED_AI"
-echo "$PAGE_JSON"
+echo "$PAGE_JSON" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print(json.dumps({
+    'question': d.get('question'),
+    'options': [{'index': o['index'], 'text': o['text']} for o in d.get('options', [])],
+}, ensure_ascii=False))
+"

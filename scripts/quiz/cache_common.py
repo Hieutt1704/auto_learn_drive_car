@@ -12,9 +12,17 @@ def norm(text):
     return text
 
 
-def question_key(options):
+def question_key(question, options, image_src=None):
+    # QUAN TRỌNG: phải tính cả nội dung câu hỏi, không chỉ tập đáp án — bộ đề này có nhiều
+    # câu hỏi khác nhau (vd. các mốc tốc độ tối đa 80/70/60/50 km/h) dùng chung một bộ đáp án
+    # giống hệt nhau, chỉ khác câu hỏi. Nếu key chỉ dựa vào đáp án, các câu này sẽ bị coi là
+    # cùng 1 câu và đè cache lẫn nhau (đáp án đúng của câu học sau sẽ ghi đè lên câu học trước).
+    #
+    # Với câu có ảnh (biển báo), đáp án chỉ ghi chung chung "Biển 1/2/3" — không mô tả nội dung
+    # — và một số câu bị trích sai/giống nhau phần text câu hỏi (lỗi detect câu hỏi), nên bắt
+    # buộc phải đưa thêm URL ảnh vào key mới phân biệt được chính xác từng câu.
     parts = sorted(norm(o["text"]) for o in options)
-    joined = "|".join(parts)
+    joined = norm(question) + "||" + "|".join(parts) + "||" + (image_src or "")
     return hashlib.md5(joined.encode("utf-8")).hexdigest()
 
 
